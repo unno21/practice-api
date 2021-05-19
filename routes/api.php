@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\AnimalController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,13 +20,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix' => 'animal'], function (){
+Route::group(['prefix' => 'animal', 'middleware' => 'auth:sanctum'], function (){
     Route::get('/', [AnimalController::class, 'index']);
     Route::get('/{animal}', [AnimalController::class, 'find']); //route model binding
     Route::post('/', [AnimalController::class, 'insert']);
     //Route::put('/{animal}', [AnimalController::class, 'update']); //route model binding
     Route::put('/', [AnimalController::class, 'update']); //route model binding
     Route::delete('/{animal}', [AnimalController::class, 'delete']); //route model binding
+});
+
+Route::group(['prefix' => 'auth'], function (){
+    Route::post('/token', [AuthController::class, 'requestToken']);
 });
 
 // GET - GET DATA
